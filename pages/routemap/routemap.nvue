@@ -1,0 +1,352 @@
+<template>
+	<view class="map">
+		<map
+			id="my-map"
+			ref="my-map"
+			class="my-map"
+			:style="{ height: allScreen - 84 + 'px' }"
+			:latitude="myLatitude"
+			:longitude="myLongitude"
+			:markers="markers"
+			enable-3D="true"
+			show-compass="true"
+			show-location="true"
+			:polyline="myPolyline"
+		></map>
+		<!-- 样式里减44px是因为默认的导航栏高度为44px -->
+		<cover-view class="control-btn">
+			<cover-view class="location" @tap="recLocation"><cover-image class="control-btn-location-img" src="../../static/imgs/location.png"></cover-image></cover-view>
+			<cover-view class="assemble" @tap="getWay('45.721272,126.634842')">
+				<cover-image class="control-btn-assemble-img" src="../../static/imgs/assemble.png"></cover-image>
+			</cover-view>
+		</cover-view>
+		<view style="margin: 15rpx;">当前位置信息：lng:{{ point[0].Lat }} , lat:{{ point[0].Lat }}</view>
+	</view>
+</template>
+
+<script>
+var amapFile = require('@/util/amap-uni.js');
+var myAmapFun = new amapFile.AMapWX({ key: '987291d2667a1c38f9ab946ce94f071f' });
+const key = '987291d2667a1c38f9ab946ce94f071f';
+export default {
+	data() {
+		return {
+			id: 0,
+			allScreen: '',
+			myLatitude: '', //纬度
+			myLongitude: '', //经度
+			markers: [
+				{
+					id: 1,
+					latitude: '45.721205',
+					longitude: '126.634945',
+					title: '测试点',
+					iconPath: '/static/imgs/start.png',
+					// width: '50px',
+					// height: '50px'
+				}
+			],
+			point: [
+				{
+					Lat: 'null',
+					Log: 'null'
+				}
+			],
+			weather: '', //天气
+			temperature: '', //温度
+			myPolyline: [], //路线
+			timer: null,
+			count: 0,
+			total: 0
+		};
+	},
+	onLoad() {
+		let that = this;
+		that.getMyLocation();
+		uni.getSystemInfo({
+			success: function(e) {
+				that.allScreen = e.screenHeight;
+			},
+			fail: function(e) {
+				console.log(e);
+			}
+		});
+		myAmapFun.getWeather({
+			success: function(data) {
+				that.weather = data.weather.data;
+				that.temperature = data.temperature.data;
+				console.log(data.weather.data);
+			},
+			fail: function(info) {
+				//失败回调
+				console.log(info);
+			}
+		});
+	},
+	onReady: function(res) {
+		this.mapContext = uni.createMapContext('my-map', this);
+	},
+	methods: {
+		// getRoute() {
+		// 	let that = this;
+		// 	var myAmapFun = new amapFile.AMapWX({ key: that.$store.state.amapKey });
+		// 	that.mapContext.includePoints({
+		// 		//缩放视野展示所有经纬度
+		// 		points: [
+		// 			{
+		// 				latitude: that.myLatitude,
+		// 				longitude: that.myLongitude
+		// 			},
+		// 			{
+		// 				latitude: that.markers[0].latitude,
+		// 				longitude: that.markers[0].longitude
+		// 			}
+		// 		]
+		// 	});
+		// 	var myLocal = that.myLongitude + ',' + that.myLatitude;
+		// 	var target = that.markers[0].longitude + ',' + that.markers[0].latitude;
+		// 	myAmapFun.getWalkingRoute({
+		// 		//获取步行线路
+		// 		origin: myLocal,
+		// 		destination: target,
+		// 		success: function(data) {
+		// 			console.log(data);
+		// 			//获取线路规划的数据，后面还需要在地图上画出来，未完成，完成后会发新博客
+		// 		},
+		// 		fail: function(info) {
+		// 			console.log(info);
+		// 		}
+		// 	});
+		// },
+		getMyLocation() {
+			let that = this;
+			uni.getLocation({
+				type: 'gcj02',
+				success: function(res) {
+					that.myLatitude = res.latitude;
+					that.myLongitude = res.longitude;
+					console.log('myLatitude为' + that.myLatitude);
+					console.log('myLongitude为' + that.myLongitude);
+					var point = [];
+					let curloc = {
+						Lat: that.myLatitude,
+						Log: that.myLongitude
+					};
+					let markerpoint = {
+						id: 2,
+						title: '123',
+						latitude: that.myLatitude,
+						longitude: that.myLongitude,
+						iconPath: '/static/logo.png',
+					};
+					that.point.push(curloc);
+					var markers = [];
+					that.markers.push(markerpoint);
+					console.log(that.markers[1].latitude);
+				},
+				fail: function(e) {
+					console.log(e);
+				}
+			});
+		},
+		recLocation() {
+			console.log(Date.now());
+			this.timer = setInterval(() => {
+				let that = this;
+				that.getMyLocation();
+				that.count += 1;
+				if (that.count === 10) {
+					clearInterval(that.timer);
+					console.log(Date.now());
+				}
+			}, 2000);
+		},
+		locationClick() {
+			console.log('location');
+			let that = this;
+			that.getMyLocation();
+			that.mapContext.moveToLocation({
+				longitude: that.myLongitude,
+				latitude: that.myLatitude,
+				success: function(res) {
+					console.log('刷新成功');
+				},
+				fail: function(e) {
+					console.log('调用失败');
+					console.log(e);
+				},
+				complete: function() {
+					console.log('调用结束');
+				}
+			});
+		},
+		assembleClick() {
+			uni.chooseLocation({
+				success: function(res) {
+					console.log('位置名称：' + res.name);
+					console.log('详细地址：' + res.address);
+					console.log('纬度：' + res.latitude);
+					console.log('经度：' + res.longitude);
+				}
+			});
+		},
+		// getWay(point) {
+		// 	let that = this;
+		// 	var startPoi = that.longitude + ',' + that.latitude;
+		// 	var endPoi = point;
+		// 	//画路线
+		// 	that.getLine(startPoi, endPoi, function(res, data) {
+		// 		that.polyline.push(res); //返回的路线，添加到路线数组中
+		// 	});
+		// 	//画起始点
+		// 	that.getMarkers(startPoi, endPoi, function(res) {
+		// 		that.markers.push.apply(that.markers, res); //返回包括起点和终点marker的数组，将这个数组与markers数组合并
+		// 	});
+		// },
+		// getLine(start, end, result, fail) {
+		// 	let that = this;
+		// 	var myAmapFun = new amapFile.AMapWX({
+		// 		key: key
+		// 	});
+
+		// 	myAmapFun.getWalkingRoute({
+		// 		//获取步行路线规划
+		// 		//需要其他方式的可以参考官方文档改success里的方法，逻辑差不多
+		// 		//官方文档https://lbs.amap.com/api/wx/reference/core
+		// 		origin: start,
+		// 		destination: end,
+		// 		success: function(data) {
+		// 			console.log(data);
+		// 			var points = [];
+		// 			if (data.paths && data.paths[0] && data.paths[0].steps) {
+		// 				var steps = data.paths[0].steps;
+		// 				for (var i = 0; i < steps.length; i++) {
+		// 					//将每一步的数据放到points数组中
+		// 					var poLen = steps[i].polyline.split(';');
+		// 					for (var j = 0; j < poLen.length; j++) {
+		// 						points.push({
+		// 							longitude: parseFloat(poLen[j].split(',')[0]),
+		// 							latitude: parseFloat(poLen[j].split(',')[1])
+		// 						});
+		// 					}
+		// 				}
+		// 			}
+		// 			result(
+		// 				{
+		// 					points: points,
+		// 					color: '#0898ef',
+		// 					width: 8
+		// 				},
+		// 				data
+		// 			); //返回data是为了添加路线详情的步骤，不需要可以去掉
+		// 		},
+		// 		fail: function(info) {
+		// 			fail(info);
+		// 		}
+		// 	});
+		// },
+		// getMarkers(startpoi, endpoi, success) {
+		// 	let markers = [];
+
+		// 	//起点
+		// 	let start = {
+		// 		iconPath: '/static/imgs/start.png', //起点图片
+		// 		id: 0,
+		// 		longitude: startpoi.split(',')[0],
+		// 		latitude: startpoi.split(',')[1],
+		// 		width: 28,
+		// 		height: 33
+		// 	};
+		// 	markers.push(start);
+		// 	//终点
+		// 	let end = {
+		// 		iconPath: '/static/imgs/end.png', //重点图片
+		// 		id: 1,
+		// 		longitude: endpoi.split(',')[0],
+		// 		latitude: endpoi.split(',')[1],
+		// 		width: 28,
+		// 		height: 33,
+		// 		callout: {
+		// 			//终点的点击气泡
+		// 			content: '集合点',
+		// 			borderRadius: 6,
+		// 			bgColor: '#ffffff',
+		// 			display: 'BYCLICK',
+		// 			textAlign: 'center'
+		// 		}
+		// 	};
+		// 	markers.push(end);
+
+		// 	success(markers);
+		// }
+	},
+	computed: {
+		weatherImg: function() {
+			//返回天气图片，未完善
+			//全部天气类型在https://lbs.amap.com/api/webservice/guide/tools/weather-code/
+			switch (this.weather) {
+				case '晴':
+					return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd3680c0-797a-11ea-b997-9918a5dda011.png';
+					break;
+				case '多云':
+					return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd29d690-797a-11ea-b94e-47f67ecf8268.png';
+					break;
+				default:
+					return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd34fa20-797a-11ea-b94e-47f67ecf8268.png';
+			}
+		}
+	}
+};
+</script>
+
+<style scoped>
+/* nvue好像不能用scss */
+.my-map {
+	width: 750rpx;
+}
+.control-btn {
+	position: fixed;
+	flex-direction: column;
+	top: 400rpx;
+	left: 20rpx;
+	align-items: center;
+	/* background-color: #f00; */
+}
+.location {
+	margin-bottom: 30rpx;
+	flex-direction: column;
+	align-items: center;
+}
+.assemble {
+	flex-direction: column;
+	align-items: center;
+}
+.control-btn-location-img {
+	width: 60rpx;
+	height: 60rpx;
+}
+.control-btn-assemble-img {
+	width: 80rpx;
+	height: 80rpx;
+}
+.control-btn-txt {
+	font-size: 19rpx;
+	text-align: center;
+}
+.weather {
+	position: fixed;
+	bottom: 10rpx;
+	right: 50rpx;
+	background-color: #fff;
+	flex-direction: row;
+	align-items: center;
+}
+.weather-img {
+	width: 50rpx;
+	height: 50rpx;
+}
+.wearth-txt {
+	color: #999999;
+	font-size: 32rpx;
+}
+</style>
