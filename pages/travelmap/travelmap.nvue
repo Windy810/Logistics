@@ -1,0 +1,116 @@
+<template>
+	<view class="map">
+		<map
+			id="my-map"
+			ref="my-map"
+			class="my-map"
+			:style="{ height: allScreen - 84 + 'px' }"
+			:latitude="myLatitude"
+			:longitude="myLongitude"
+			:markers="markers"
+			enable-3D="true"
+			show-compass="true"
+			show-location="true"
+			v-if="isshow"
+			:polyline="myPolyline"
+		></map>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				allScreen: '',
+				myLatitude: '', //纬度
+				myLongitude: '', //经度
+				markers:[],
+				isshow: true,
+				
+			}
+		},
+		onLoad() {
+			let that=this;
+			that.getMyLocation();
+			uni.getSystemInfo({
+				success: function(e) {
+					that.allScreen = e.screenHeight;
+				},
+				fail: function(e) {
+					console.log(e);
+				}
+			});
+			that.get();
+		},
+		onReady: function(res) {
+			this.mapContext = uni.createMapContext('my-map', this);
+		},
+		methods: {
+			get() {
+				uni.showLoading({
+					title: '处理中...'
+				})
+				uniCloud.callFunction({
+					name: 'get'
+				}).then((res) => {
+					uni.hideLoading()
+					uni.showModal({
+						content: `查询成功，获取数据列表为：${JSON.stringify(res.result.data)}`,
+						showCancel: false
+					})
+					this.markers=res.result.data[0].markers;
+					console.log(res.result.data[0].markers);
+					console.log(this.markers);
+				}).catch((err) => {
+					uni.hideLoading()
+					uni.showModal({
+						content: `查询失败，错误信息为：${err.message}`,
+						showCancel: false
+					})
+					console.error(err)
+				})
+			},
+			getMyLocation() {
+				let that = this;
+				uni.getLocation({
+					type: 'gcj02',
+					success: function(res) {
+						that.myLatitude = res.latitude;
+						that.myLongitude = res.longitude;
+						console.log('myLatitude为' + that.myLatitude);
+						console.log('myLongitude为' + that.myLongitude);
+						// var point = [];
+						// let curloc = {
+						// 	Lat: that.myLatitude,
+						// 	Log: that.myLongitude
+						// };
+						// let markerpoint = {
+						// 	id: that.markers.length + 1,
+						// 	latitude: that.myLatitude.toString(),
+						// 	longitude: that.myLongitude.toString(),
+						// 	title: '123',
+						// 	// iconPath: '/static/logo.png'
+						// };
+						// that.point.push(curloc);
+						// // var markers = [];
+						// that.markers.push(markerpoint);
+						that.isshow = false;
+						setTimeout(() => {
+							that.isshow = true;
+						}, 100);
+						console.log(that.markers);
+					},
+					fail: function(e) {
+						console.log(e);
+					}
+				});
+			},
+		}
+	}
+</script>
+
+<style>
+.my-map {
+	width: 750rpx;
+}
+</style>

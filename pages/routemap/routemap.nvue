@@ -11,16 +11,17 @@
 			enable-3D="true"
 			show-compass="true"
 			show-location="true"
+			v-if="isshow"
 			:polyline="myPolyline"
 		></map>
 		<!-- 样式里减44px是因为默认的导航栏高度为44px -->
 		<cover-view class="control-btn">
 			<cover-view class="location" @tap="recLocation"><cover-image class="control-btn-location-img" src="../../static/imgs/location.png"></cover-image></cover-view>
-			<cover-view class="assemble" @tap="getWay('45.721272,126.634842')">
+			<cover-view class="assemble" @tap="endRec">
 				<cover-image class="control-btn-assemble-img" src="../../static/imgs/assemble.png"></cover-image>
 			</cover-view>
 		</cover-view>
-		<view style="margin: 15rpx;">当前位置信息：lng:{{ point[0].Lat }} , lat:{{ point[0].Lat }}</view>
+		<!-- <view style="margin: 15rpx;">当前位置信息：lng:{{ point[1].Lat }} , lat:{{ point[1].Lat }}</view> -->
 	</view>
 </template>
 
@@ -35,13 +36,14 @@ export default {
 			allScreen: '',
 			myLatitude: '', //纬度
 			myLongitude: '', //经度
+			isshow: true,
 			markers: [
 				{
 					id: 1,
-					latitude: '45.721205',
+					latitude: '45.721625',
 					longitude: '126.634945',
 					title: '测试点',
-					iconPath: '/static/imgs/start.png',
+					// iconPath: '/static/imgs/start.png'
 					// width: '50px',
 					// height: '50px'
 				}
@@ -57,7 +59,7 @@ export default {
 			myPolyline: [], //路线
 			timer: null,
 			count: 0,
-			total: 0
+			isEnd: false,
 		};
 	},
 	onLoad() {
@@ -133,16 +135,20 @@ export default {
 						Log: that.myLongitude
 					};
 					let markerpoint = {
-						id: 2,
+						id: that.markers.length + 1,
+						latitude: that.myLatitude.toString(),
+						longitude: that.myLongitude.toString(),
 						title: '123',
-						latitude: that.myLatitude,
-						longitude: that.myLongitude,
-						iconPath: '/static/logo.png',
+						// iconPath: '/static/logo.png'
 					};
 					that.point.push(curloc);
-					var markers = [];
+					// var markers = [];
 					that.markers.push(markerpoint);
-					console.log(that.markers[1].latitude);
+					// that.isshow = false;
+					// setTimeout(() => {
+					// 	that.isshow = true;
+					// }, 100);
+					console.log(that.markers);
 				},
 				fail: function(e) {
 					console.log(e);
@@ -151,15 +157,51 @@ export default {
 		},
 		recLocation() {
 			console.log(Date.now());
+			this.isEnd=false;
 			this.timer = setInterval(() => {
 				let that = this;
+				// setTimeout(() => {
+				// 	
+				// },2000);
 				that.getMyLocation();
 				that.count += 1;
-				if (that.count === 10) {
+				if (that.isEnd === true) {
 					clearInterval(that.timer);
-					console.log(Date.now());
+					console.log(that.count);
 				}
 			}, 2000);
+			// this.getMyLocation();
+		},
+		endRec(){
+			this.isEnd=true;
+			
+		// },
+		// add() {
+			uni.showLoading({
+				title: '处理中...'
+			})
+			uniCloud.callFunction({
+				name: 'add',
+				data: {
+					markers:this.markers,
+					createTime: Date.now()
+				}
+			}).then((res) => {
+				uni.hideLoading()
+				uni.showModal({
+					content: `成功添加一条数据，文档id为：${res.result.id}`,
+					showCancel: false
+				})
+				console.log(res)
+			}).catch((err) => {
+				uni.hideLoading()
+				uni.showModal({
+					content: `添加数据失败，错误信息为：${err.message}`,
+					showCancel: false
+				})
+				console.error(err)
+			})
+			this.markers=[];
 		},
 		locationClick() {
 			console.log('location');
@@ -189,7 +231,7 @@ export default {
 					console.log('经度：' + res.longitude);
 				}
 			});
-		},
+		}
 		// getWay(point) {
 		// 	let that = this;
 		// 	var startPoi = that.longitude + ',' + that.latitude;
@@ -280,22 +322,22 @@ export default {
 		// 	success(markers);
 		// }
 	},
-	computed: {
-		weatherImg: function() {
-			//返回天气图片，未完善
-			//全部天气类型在https://lbs.amap.com/api/webservice/guide/tools/weather-code/
-			switch (this.weather) {
-				case '晴':
-					return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd3680c0-797a-11ea-b997-9918a5dda011.png';
-					break;
-				case '多云':
-					return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd29d690-797a-11ea-b94e-47f67ecf8268.png';
-					break;
-				default:
-					return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd34fa20-797a-11ea-b94e-47f67ecf8268.png';
-			}
-		}
-	}
+	// computed: {
+	// 	weatherImg: function() {
+	// 		//返回天气图片，未完善
+	// 		//全部天气类型在https://lbs.amap.com/api/webservice/guide/tools/weather-code/
+	// 		switch (this.weather) {
+	// 			case '晴':
+	// 				return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd3680c0-797a-11ea-b997-9918a5dda011.png';
+	// 				break;
+	// 			case '多云':
+	// 				return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd29d690-797a-11ea-b94e-47f67ecf8268.png';
+	// 				break;
+	// 			default:
+	// 				return 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-tourism/fd34fa20-797a-11ea-b94e-47f67ecf8268.png';
+	// 		}
+	// 	}
+	// }
 };
 </script>
 

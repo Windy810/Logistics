@@ -1,0 +1,37 @@
+<template>
+	<view class="map">
+		<map
+			id="my-map"
+			ref="my-map"
+			class="my-map"
+			:style="{ height: allScreen - 84 + 'px' }"
+			:latitude="myLatitude"
+			:longitude="myLongitude"
+			:markers="markers"
+			enable-3D="true"
+			show-compass="true"
+			show-location="true"
+			v-if="isshow"
+			:polyline="myPolyline"
+		></map>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			
+		}
+	}
+</script>
+
+<style>
+.my-map {
+	width: 750rpx;
+}
+</style>
