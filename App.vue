@@ -16,4 +16,10 @@
 	/*每个页面公共css */
 	@import "colorui/main.css";
 	@import "colorui/icon.css";
+	page {
+	    background-color: #FFFFFF;
+	    height: 100%;
+	    font-size: 28upx;
+	    line-height: 1.8;
+	}
 </style>

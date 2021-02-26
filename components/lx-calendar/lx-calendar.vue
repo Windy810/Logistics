@@ -562,7 +562,7 @@ export default {
 <style lang="less">
 @import (less) '../../static/lx-calendar/fonts/iconfont.css';
 
-@color:#007aff;
+@color:#64629c;
 @color_disabled:#f1f1f1;
 @color_standard:#333;
 @color_border:#f5f5f5;

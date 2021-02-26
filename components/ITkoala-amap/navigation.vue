@@ -49,8 +49,28 @@ export default {
 			  	map: this.map,
 			  	panel: 'panel'
 			  })
+			  //   var  waypoints:[
+					// new AMap.LngLat(116.722967, 40.047705),
+					// new AMap.LngLat(116.606476, 39.842024),
+					// new AMap.LngLat(116.57941, 39.91557),
+					// new AMap.LngLat(116.722967, 40.047705)
+					// ]
+					
+				 var points = [
+				    { keyword: '北京市地震局（公交站）',city:'北京' },
+				    { keyword: '北京站', city:'北京' }
+				  ]
+				
+				  var opts = {
+				    // 途经点参数，最多支持传入16个途经点
+				    waypoints: [
+				      { keyword: '北京站', city:'北京' }
+				    ],
+					province:'黑',
+					number:'NH1N11'
+				  }
 			  // 根据起终点经纬度规划驾车导航路线
-			  driving.search(new AMap.LngLat(114.379028, 39.865042), new AMap.LngLat(116.427281, 39.903719), (status, result) => {
+			  driving.search(points,opts, (status, result) => {
 			  	if (status === 'complete') {
 			  		console.log('绘制驾车路线完成')
 			  	} else {

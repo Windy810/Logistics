@@ -3428,6 +3428,11 @@ scroll-view.cu-steps .cu-item {
 	color: #ffffff;
 }
 
+.bg-logistics {
+	background-color: #6d70a7;
+	color: #ffffff;
+}
+
 .bg-cyan {
 	background-color: #1cbbb4;
 	color: #ffffff;

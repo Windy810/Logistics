@@ -1,62 +1,133 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app",
-				"app-plus": {"titleNView":false}
-			}
-		}
-	    ,{
+    "pages" : [
+        //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path" : "pages/index/index",
+            "style" : {
+                "navigationBarTitleText" : "uni-app",
+                "app-plus" : {
+                    "titleNView" : false
+                }
+            }
+        },
+        {
             "path" : "pages/home/home",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
+            "style" : {
+                "navigationBarTitleText" : "今日行驶路线",
+                "enablePullDownRefresh" : false
             }
-            
-        }
-        ,{
-            "path" : "pages/routemap/routemap",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/carnavigation/carnavigation",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
+        },
+        {
             "path" : "pages/travel/travel",
+            "style" : {
+                "navigationBarTitleText" : "途径点记录",
+                "enablePullDownRefresh" : false
+				// "app-plus": {
+				// 	"titleNView": {
+				// 		"buttons": [{
+				// 			"text":"路线图",
+				// 			// "fontSrc":"/static/iconfont.ttf",
+				// 			"fontSize":"15px"
+				// 			}]
+				// 		}
+				// 	}
+            }
+        },
+        {
+            "path" : "components/ITkoala-amap/navigation",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/waypoints/waypoints",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "路线规划",
                 "enablePullDownRefresh": false
             }
             
         }
         ,{
-            "path" : "pages/travelmap/travelmap",
+            "path" : "pages/carnavigation/reverse",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
+                
+				"navigationBarTitleText" : "记录轨迹",
+				"enablePullDownRefresh" : true
+            }
+            
+        }
+        ,{
+            "path" : "pages/carnavigation/recordloc/recordloc",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "行驶记录",
+                "enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text":"结束行驶",
+							// "fontSrc":"/static/iconfont.ttf",
+							"fontSize":"15px"
+							}]
+						}
+					}
             }
             
         }
     ],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	}
+	"tabBar": {
+			"color":"#8a8a8a",
+			"selectedColor":"#7343c6",
+			"borderStyle":"black",
+			"backgroundColor":"#ffffff",
+			"list": [
+				{
+					"pagePath":"pages/index/index",
+					"text":"首页",
+					"iconPath":"static/icon/index.png",
+					"selectedIconPath":"static/icon/indexs.png"
+				},
+				{
+					"pagePath":"pages/waypoints/waypoints",
+					"text":"路线规划",
+					"iconPath":"static/icon/waypoint.png",
+					"selectedIconPath":"static/icon/waypoints.png"
+				},
+				{
+					"pagePath":"pages/travel/travel",
+					"text":"轨迹点记录",
+					"iconPath":"static/icon/travel.png",
+					"selectedIconPath":"static/icon/travels.png"
+				},
+				{
+					"pagePath":"pages/home/home",
+					"text":"轨迹回放",
+					"iconPath":"static/icon/home.png",
+					"selectedIconPath":"static/icon/homes.png"
+				}
+				// {
+				// 	"pagePath":"pages/me/me",
+				// 	"text":"我的",
+				// 	"iconPath":"./static/icon/me.png",
+				// 	"selectedIconPath":"static/icon/mes.png"
+				// }
+			]	
+		 },
+    "globalStyle" : {
+        "navigationBarTextStyle" : "black",
+        "navigationBarTitleText" : "uni-app",
+        "navigationBarBackgroundColor" : "#F8F8F8",
+        "backgroundColor" : "#F8F8F8"
+    },
+    "condition" : {
+        //模式配置，仅开发期间生效
+        "current" : 0, //当前激活的模式(list 的索引项)
+        "list" : [
+            {
+                "name" : "", //模式名称
+                "path" : "", //启动页面，必选
+                "query" : "" //启动参数，在页面的onLoad函数里面得到
+            }
+        ]
+    }
 }

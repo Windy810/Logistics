@@ -2,7 +2,7 @@
 	<view class="amap-container">
 		<view :prop="markerList" :change:prop="amap.updateEcharts" id="amap"></view>
 		<view class="is-fixed ">
-			<view class="text-center">当前点击的对象的index值为：{{ dataIndex }}</view>
+			<view class="text-center padding">当前点击的对象的index值为：{{ dataIndex }}</view>
 		</view>
 	</view>
 </template>
@@ -26,20 +26,47 @@ export default {
 		getMapData() {
 			this.markerList = [
 				{
-					lat: 39.908775,
-					lng: 116.406315,
-					icon: start
-				},
-				{
-					lat: 39.973253,
-					lng: 116.473195,
-					icon: start
-				},
-				{
-					lat: 39.953253,
-					lng: 116.453195,
-					icon: start
-				}
+				      "id": 1,
+				      lat: "45.721625",
+				      lng: "126.634945",
+				      "title": "测试点"
+				    },
+				    {
+				      "id": 2,
+				      lat: "45.721008",
+				      lng: "126.635714",
+				      "title": "123"
+				    },
+				    {
+				      "id": 3,
+				      lat: "45.72104",
+				      lng: "126.635258",
+				      "title": "123"
+				    },
+				    {
+				      "id": 4,
+				      lat: "45.72104",
+				      lng: "126.635258",
+				      "title": "123"
+				    },
+				    {
+				      "id": 5,
+				      lat: "45.72104",
+				      lng: "126.635258",
+				      "title": "123"
+				    },
+				    {
+				      "id": 6,
+				      lat: "45.72104",
+				      lng: "126.635258",
+				      "title": "123"
+				    },
+				    {
+				      "id": 7,
+				      lat: "45.72104",
+				      lng: "126.635258",
+				      "title": "123"
+				    }
 			]
 		},
 		//地图点击回调事件
