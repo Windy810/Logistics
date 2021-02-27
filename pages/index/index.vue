@@ -11,7 +11,11 @@
 				<view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
 					<view class="cu-form-group">
 						<view class="title">车辆类型</view>
-						<input placeholder="1小型/2轻型/3中型/4重型" name="cartype" v-model="info.cartype"></input>
+						<input placeholder="0普通1纯电动2插电混动" name="cartype" v-model="info.cartype"></input>
+					</view>
+					<view class="cu-form-group">
+						<view class="title">车辆大小</view>
+						<input placeholder="1微型/2轻型/3中型/4重型" name="size" v-model="info.size"></input>
 					</view>
 					<view class="cu-form-group">
 						<view class="title">省份简称</view>
@@ -21,14 +25,6 @@
 						<view class="title">车牌号码</view>
 						<input placeholder="车牌数字部分" name="number" v-model="info.number"></input>
 					</view>
-				<!-- 	<view class="cu-form-group">
-						<view class="title">车高</view>
-						<input placeholder="" name="height" v-model="info.height"></input>
-					</view>
-					<view class="cu-form-group">
-						<view class="title">车宽</view>
-						<input placeholder="" name="width" v-model="info.width"></input>
-					</view> -->
 				</view>
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
@@ -101,7 +97,11 @@
 			<view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
 				<view class="cu-form-group">
 					<view class="title">车辆类型</view>
-					<input placeholder="1小型/2轻型/3重型/4重型" name="cartype" v-model="info.cartype"></input>
+					<input placeholder="0普通1纯电动2插电混动" name="cartype" v-model="info.cartype"></input>
+				</view>
+				<view class="cu-form-group">
+					<view class="title">车辆大小</view>
+					<input placeholder="1微型/2轻型/3中型/4重型" name="size" v-model="info.size"></input>
 				</view>
 				<view class="cu-form-group">
 					<view class="title">省份简称</view>
@@ -110,14 +110,6 @@
 				<view class="cu-form-group">
 					<view class="title">车牌号码</view>
 					<input placeholder="车牌数字部分" name="number" v-model="info.number"></input>
-				</view>
-				<view class="cu-form-group">
-					<view class="title">车高</view>
-					<input placeholder="以m为单位" name="height" v-model="info.height"></input>
-				</view>
-				<view class="cu-form-group">
-					<view class="title">车宽</view>
-					<input placeholder="以m为单位" name="width" v-model="info.width"></input>
 				</view>
 				<view style="margin: 15rpx;" class="padding shadow">
 					<button style="backgroundColor: #7676b1;" type="primary" @tap="modcarinfo">确认信息</button>
@@ -145,8 +137,7 @@ export default {
 				cartype:null,
 				province:'黑',
 				number:'1NE11',
-				height:"4m",
-				width:"1.6m"
+				size:null
 			},
 			plan:[
 					{
